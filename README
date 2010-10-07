@@ -1,0 +1,15 @@
+Wikipedia Spam Router/Detector
+Avantika Agrawal, Phillip Baker, Brittney Exline
+
+You need all files in this repository. I work on this on my local install (Mac) and scp'ed it to a *nix system:
+   scp wiki_prop.tex wiki_spam.bib user@example.com:~/tmp/ ; ssh user@example.com  "cd tmp/; pdflatex wiki_prop.tex; bibtex wiki_prop; pdflatex wiki_prop.tex; pdflatex wiki_prop.tex"; scp user@example.com:~/tmp/wiki_prop.pdf .  
+
+The repeated
+
+    pdflatex wiki_prop.tex
+    bibtex wiki_prop
+    pdflatex wiki_prop.tex
+    pdflatex wiki_prop.tex
+
+is crazy, but apparently needed. Love it.
+
