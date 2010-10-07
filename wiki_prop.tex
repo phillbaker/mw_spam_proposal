@@ -1,0 +1,142 @@
+
+% Avantika Agrawal, Phill Baker, Brittney Exline - wiki_prop.tex
+% Main LaTeX file for CIS400/401 Project Proposal Specification
+%
+% Once built and in PDF form this document outlines the format of a project proposal. However, in raw (.tex) form, we also try to comment on some basic LaTeX technique. This is not intended to be a LaTeX tutorial, instead just (1) a use-case thereof, and (2) a template for your own writing.
+
+	% AW - Ordinarily we'd begin by specifying some broad document properties like font-size, page-size, margins, etc. -- We have done this (and much more) for you by creating a 'style file', which the 'documentclass' command references.
+\documentclass[letterpaper]{sig-alternate}
+ 
+	% AW - These 'usepackage' commands are a way of importing additional LaTeX styles and formattings that aren't part of the 'standard library'
+\usepackage{mdwlist}
+\usepackage{url}
+\pdfpagewidth=8.5in
+\pdfpageheight=11in
+\begin{document} 
+
+	% AW - We setup the parameters to our title header before 'making' it.
+\title{CIS400/401 Project Proposal Specification}
+\subtitle{Dept. of CIS - Senior Design 2010-2011}
+\numberofauthors{5}
+\author{
+\alignauthor Oleg Sokolsky \\ \email{sokolsky@cis.upenn.edu} \\ Univ. of Pennsylvania \\ Philadelphia, PA
+\alignauthor Andrew G. West \\ \email{westand@cis.upenn.edu} \\ Univ. of Pennsylvania \\ Philadelphia, PA
+\alignauthor Avantika Agrawal \\ \email{aagrawal@seas.upenn.edu} \\ Univ. of Pennsylvania \\ Philadelphia, PA
+\alignauthor Avantika Agrawal \\ \email{aagrawal@seas.upenn.edu} \\ Univ. of Pennsylvania \\ Philadelphia, PA
+\alignauthor Avantika Agrawal \\ \email{aagrawal@seas.upenn.edu} \\ Univ. of Pennsylvania \\ Philadelphia, PA}
+\date{}
+\maketitle
+
+	% AW - Next we write out our abstract -- generally a two paragraph maximum, executive summary of the motivation and contributions of the work.
+\begin{abstract}
+\textit{Abstract: The purpose of this document is to propose a senior design project involving spam detection in Wikipedia. It provides some context for the problem we are trying to solve, as well as describes the approach that we will be taking to solve the problem.}
+
+\textit{Wikipedia has been facing an increasing threat from spammers who post unproductive links on popular pages in order to boost their Google PageRank scores or promote their personal blogs, etc. This project will involve developing a system that automatically classifies link-spam edits in Wikipedia. We will begin by populating a corpus of edits and labeling these as spam or non-spam. We will then examine the corpus to develop a taxonomy of spam behavior, and extract features that can classify spam. Using a machine-learning classifier, we will then implement a real-time edit processing system for Wikipedia.}
+\end{abstract}
+
+\section{Introduction}
+\label{sec:intro}
+Within the past eight years, Wikipedia, the free online encyclopedia, has grown tremendously in size, credibility, and popularity. What is more amazing perhaps, is that this is sustained by dedicated volunteers, and that the online encyclopedia is open to anyone with a computer and internet connection to edit any article. As such, these qualities make it vulnerable to many types of vandalism, which could threaten its credibility if not handled. In any case, the network of volunteers along with fully and semi automated bots effectively maintain the site’s integrity in most cases.
+
+Vandalism on Wikipedia ranges from partial or complete deletion of information and insertion of profane or hateful messages, to misrepresentation of facts and spam. Most current technologies that exist in the effort to fight this focus on the offences which most compromise credibility, both because they are more common acts and also more obviously damaging to the reader’s pursuit of knowledge. However spam on the site is less concentrated on as an issue since it is a small subset of the vandalism Wikipedia faces, and thus has not appeared as threatening as other forms of vandalism. 
+
+Even so, spam on the encyclopedia has a great potential to grow, since Wikipedia is a very highly trafficked site, and there is no current protection in place specifically against spam. According to Eric Goldman [X], as the site’s popularity increases, so does its appeal to spammers, creating higher volumes of spam to combat. On the other hand, the encyclopedia’s current volunteers will eventually turn over, and replacing these volunteers will be difficult without the prospect of some sort of pay. Taking these into account, in the long term Wikipedia’s survival is at stake if spam increases and human means of combating this decreases.
+This proposal seeks to outline a solution to fighting spam on the site, drawing from previous work in fighting email and blog spam, as well as current defenses against general vandalism in Wikipedia. First a corpus will be gathered from IRC channels that broadcast when new links are added to the site, along with the associated metadata. We will then analyze this data to find features in the metadata that correspond to instances of spam; using this a scoring system will be made to ultimately classify occurrences of spam. The final product will be a piece of software that uses machine learning to identify spam and report it to humans for appropriate action to be taken. This solution could be extended to detecting spam on other collaborative systems besides Wikipedia.
+
+\section{Related Work}
+\label{sec:related_work}
+Although no substantial work has been done to specifically block spam on Wikipedia and crowdsourced systems of this sort, we will be building on the techniques used in detecting email, blog and web spam as well as the existing methodologies used in blocking vandalism on Wikipedia. 
+
+In their research on the economics of email spam, Kanich et al [x] have found that spam can be quite profitable at a large enough scale. Given their high user traffic and low marginal cost of propagating spam on their interfaces, collaborative systems are becoming a massive target for these kinds of spamming attacks. Manual spam detection is slow and time-consuming and the spam often stays visible for long enough to be profitable for spammers.
+<graph from Wikipedia: The Missing Manual here>
+
+\textbf{Anti-spam strategies.} Heymann, Koutrika and Garcia-Molina have explored different approaches to block spam in their research on Fighting Spam on Social Websites [x]. They define three main anti-spam strategies: detection-based, demotion-based and prevention-based. Demotion-based identification reduces the prominence of content, based on the probability of it being spam. This is particularly valuable in interfaces with ordered lists, but since the Wikipedia interface does not really have the capacity to reduce prominence of certain edits, we will not be taking this route. Alternatively, prevention-based strategies make the spamming process more difficult and limit automated spamming through programmatic access. Since automated spamming is not our primary concern in this project and limiting contribution from users undermines Wikipedia’s crowdsourcing model, we will not be using this method either. For this project, we will be largely employing detection-based methodologies. This involves identifying spam either manually or using pattern-based classification and then removing the spam from the interface. We will be taking the identification process a step further by using machine-learning strategies to automatically detect and remove spam. <venn diagram here>
+
+\textbf{Natural language processing techniques.} Graham’s efforts [x] in email spam detection involve Bayesian spam filtering - correlating the use of tokens with spam and using statistical methods to assign each email a probability of being spam. This certainly limits the spammers in the sense that they need to make the language of their edits virtually indistinguishable from those of ordinary edits. Newer NLP techniques have emerged in the works of Potthast et al [x]. where he analyzes attributes such as term frequency, vulgarity of language, etc. in order to detect vandalism on Wikipedia. When translated to spam detection on Wikipedia, these approaches may certainly help in selecting attributes that differentiate spam and non-spam, particularly when applied to the source HTML of a posted link.
+
+\textbf{Spatial and temporal feature analysis.} We will also be examining non-language, temporal and spatial attributes such as timing of the edit, reputation of the author, link placement, etc.  These kinds of behavioral factors have been explored for email spam- for instance, Ramachandran et al. have developed a tool called SpamTracker [x] which makes use of a behavioral blacklist to detect spam based on factors like sending pattern, the time interval between successive emails, etc.
+
+\textbf{Defining vandalism in Wikipedia.} Priedhorsky et al. [X] were among the first to address the problem of systematically identifying instances of vandalism in Wikipedia. They first approach the question of who creates value when they edit by creating a measure of persistent word views (PWV), which evaluates how many views each word entered by a particular editor receives. They then classified revisions into several categories based on the degree and nature of the damage and the possibility of the edit being reverted. Using these measures they found that many damaging edits are quite quickly reverted by a combination of humans and bots. Lastly, they had human judges identify the type of vandalism present in the damaging edits, including spam, which constituted 9% off the damaging edits. This article provides valuable information in terms of understanding and defining value and damage in Wikipedia edits, and the process behind maintaining quality in the articles. Since we will be focusing particularly on spam, this information will be extended into an automated solution and narrowly focused on spam.
+
+textbf{Detecting and reverting vandalism.}  Geiger and Ribes [X] conduct more qualitative research on the social impact of bots in the Wikipedia editor community and their coordination in catching vandals. They make the argument that this process is an instance of distributed cognition, which is only possible with the combination of fully and semi-automated tools used to detect spam and human actors who verify and revert damaging edits. Using trace ethnography they highlight the importance of assisted editing programs such as Huggle in the creation of a decentralized network of “vandal fighters”, and its effectiveness in restoring order in Wikipedia. This provides insight into the role spam detection software would play in the community, and its potential for widespread use, since our solution would target a different set of vandalism than is outlined in this article.
+
+textbf{Implementation of detecting vandalism.} Unlike the other articles which focused on researching and understanding the problem at different levels, West, Kannan, and Lee [X] develop a solution to actually detect vandalism using revision metadata rather than natural language processing. They gather a corpus of metadata associated with edits, and conduct a statistical analysis of both simple and aggregate features that may be correlated with a damaging edit as opposed to a non-damaging one. Using this data they create their classification system and test it on part of the corpus, resulting in similar results as NLP algorithms that address the same problem. We will take a similar approach in using metadata, but will define a narrower set of features specific to spam to analyze the corpus; this will be discussed further in the Anticipated Approach.
+
+\section{Project Proposal}
+\label{sec:project_proposal}
+
+\subsection{Anticipated Approach}
+\label{subsec:approach}
+Our system architecture will be modeled after STiki, an on-Wikipedia implementation of spatio-temporal techniques to detect vandalism. <Figure with STiki architecture>
+
+In order to design and implement this spam detection system effectively, we have identified the following phases.
+
+\textbf{Develop a corpus:} We will be using a corpus infrastructure similar to what was used by Martin Potthast in detecting vandalism on Wikipedia [x]. This involves setting up a corpus of Wikipedia edits made and labeling them as spam or non-spam. This should serve as the dataset on which we will base the machine learning algorithm. 
+\begin{enumerate}
+\item Design a database with the fields necessary to store metadata extracted from Wikipedia edits. 
+\item Implement software to extract information about these edits into the database, using JAVA and the publicly available Wiki APIs. We will aim to extract as much information about these edits as possible including article that the link was added to, context about the article, metadata of the edit, html source of the page being linked to. A lot of this has been implemented in a tool called STiki [x] which listens to the Wikipedia Recent Changes’ IRC Channel. We will be building upon this software for our purposes.
+\item Examine and label edits as spam or non-spam. This may be done manually or using information about whether an edit was reverted by an authorized Wikipedia administrator. Labeling edits as good and bad may be challenging. For instance, although we can assume that an edit that was reverted was a bad edit, we cannot be certain that an edit that was not reverted was a good link – it may have merely been an oversight by the admin.
+\end{enumerate}
+
+\textbf{Design and implement a machine learning algorithm:} We will be using a machine learning tool called Weka in order to determine which features can be effectively used to distinguish spam on Wikipedia. The bulk of this phase will be in analyzing the data and determining which inputs we need to provide to Weka.
+\begin{enumerate}
+\item Analyze the corpus and determine interesting features that differentiate spam. A focus will need to be made on quantifiable features. This can be done through a manual analysis of the database or querying the database
+Input these features and the corpus to Weka in order to get a scoring for whether or not these features are useful. 
+\item Examine the highest scoring features and develop some intuitive and statistical arguments for why these features are relevant.
+\item Present our findings: Having performed and tested our system, we will present these findings to the Wikipedia community and get feedback on ways to improve the system. We will also determine a useful way for Wikipedia to test and utilize the software e.g. through open APIs, documentation, etc.
+\end{enumerate}
+
+\subsection{Evaluation Criteria}
+\label{subsec:eval_criteria}
+Considering that this project is the first attempt at spam detection specifically in Wikipedia, any solution is trivially the best. However we will use criteria similar to that used in evaluating STiki and that outlined by Heymann, Koutrika, and Garcia-Molina [X]. Since our solution will ultimately be identifying a set of edits as either spam or non-spam, which is essentially assigning a set of objects some boolean value, the techniques of precision and recall are directly applicable. It is unclear though what percentage precision and recall to aim for considering there is no standard to compare to; any number set will likely be changed once this undertaking is more thoroughly understood. But for the sake of this proposal, we acknowledge that our implementation will be similar to STiki, and will hold it to similar percentages of precision and recall that it reached (49% precision and 50% recall) [X]. 
+
+We will also evaluate our project subjectively by taking it to the community of Wikipedia editors and to the creator of STiki. Since they know better than anyone the process behind removing cases of vandalism, and would be the ones potentially using this solution, they are best suited to evaluate our solution’s performance. This feedback could be gathered at certain points during the project to ensure that the suggestions can be more easily included in the implementation.
+
+\section{Research Timeline}
+\label{sec:research_timeline}
+This project will be completed within the timeframe of the 2010-2011 school year. General milestones will be based around the calendar of the senior design class. Since our team shares members between the ESE and the CIS departments, we will work toward both sets of requirements, with interim deadlines established to ensure that small steps are taken toward the final goal of have the infrastructure and user front-end built, deployed and tested a week before Senior Design Demo Day in April, 2011.
+
+Specifically, our team will work towards accomplishing the following project documentation by the given dates:
+\begin{itemize}
+\item September 9: ESE Senior Design Proposal
+\item October 5: ESE Proposal review
+\item October 7: CIS Proposal
+\item Weeks 3-4, October: ESE Senior Design Project Presentation 1
+\item November 12: ESE First Report
+\item Weeks 4, November Week 2 December: ESE Senior Design Project Presentation 2
+\item December 9: CIS  Progress report 
+\item December 17: ESE Phase 1 Report
+\item Mid-January: ESE Revised Schedule
+\item May: ESE Phase 2 Report
+\end{itemize}
+
+The work to build the software will happen in parallel to these documentation efforts. Important milestones include:
+
+\begin{itemize}
+\item End of October: Corpus infrastructure running and collecting edits
+\item Beginning of December: Data labeled into working sets
+\item Middle of February: Relevant features identified
+\item End of March: Features implemented into Weka
+\item April: User frontend designed, built and tested.
+\item April: Senior Design Demo Day
+\end{itemize}
+This timeline includes ample room for the necessary mistakes to be made and corrected. It is important that there will be some time to learn about the software packages being used, as well as the tacit knowledge necessary to operate effectively in this problem domain.
+
+
+\bibliographystyle{plain} % Please do not change the bib-style
+\bibliography{wiki_spam}  % Just the *.BIB filename
+
+\vspace{150pt}
+
+\appendix
+\section{Other Specifics}
+\label{app:other_specifics}
+Your proposal need not have appendices like this section and the next, but we still have critical info to share:
+
+
+\section{\LaTeX{} Examples}
+\label{app:latex_examples}
+
+
+\end{document} 
+
